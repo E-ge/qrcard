@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "402652164142",
+    "project_id": "qrcard-a84a3",
+    "storage_bucket": "qrcard-a84a3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:402652164142:android:5e8c96d7df5dab79352fbf",
+        "android_client_info": {
+          "package_name": "com.gksoftware.qrcard"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2xwutq3V75GbX0bpjvU8eRlEM6EAAABI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
