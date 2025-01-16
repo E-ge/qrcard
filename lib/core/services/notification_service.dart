@@ -12,24 +12,31 @@ class NotificationService {
   Future<void> initialize() async {
     try {
       // FCM izinlerini al
-      await _firebaseMessaging.requestPermission(
+      NotificationSettings settings =
+          await _firebaseMessaging.requestPermission(
         alert: true,
         badge: true,
         sound: true,
         provisional: false,
       );
 
+      print('User granted permission: ${settings.authorizationStatus}');
+
       // FCM token al ve kaydet
       String? token = await _firebaseMessaging.getToken();
       if (token != null) {
         await _saveToken(token);
-        print('FCM Token: $token');
+        print('=================== FCM TOKEN ===================');
+        print(token);
+        print('===============================================');
       }
 
       // Token yenilendiğinde
       _firebaseMessaging.onTokenRefresh.listen((token) async {
         await _saveToken(token);
-        print('FCM Token yenilendi: $token');
+        print('=================== YENİ FCM TOKEN ===================');
+        print(token);
+        print('===================================================');
       });
 
       // Ön planda bildirim gösterme ayarları
@@ -42,13 +49,19 @@ class NotificationService {
 
       // Ön planda bildirim geldiğinde
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        print('Ön planda mesaj alındı: ${message.notification?.title}');
+        print('Ön planda mesaj alındı:');
+        print('Title: ${message.notification?.title}');
+        print('Body: ${message.notification?.body}');
+        print('Data: ${message.data}');
         _handleMessage(message);
       });
 
       // Arka planda bildirim tıklandığında
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-        print('Arka planda bildirim tıklandı: ${message.notification?.title}');
+        print('Arka planda bildirim tıklandı:');
+        print('Title: ${message.notification?.title}');
+        print('Body: ${message.notification?.body}');
+        print('Data: ${message.data}');
         _handleMessage(message);
       });
 
@@ -56,8 +69,10 @@ class NotificationService {
       RemoteMessage? initialMessage =
           await FirebaseMessaging.instance.getInitialMessage();
       if (initialMessage != null) {
-        print(
-            'Uygulama kapalıyken bildirim tıklandı: ${initialMessage.notification?.title}');
+        print('Uygulama kapalıyken bildirim tıklandı:');
+        print('Title: ${initialMessage.notification?.title}');
+        print('Body: ${initialMessage.notification?.body}');
+        print('Data: ${initialMessage.data}');
         _handleMessage(initialMessage);
       }
     } catch (e) {
@@ -67,10 +82,16 @@ class NotificationService {
 
   void _handleMessage(RemoteMessage message) {
     try {
-      // Burada bildirime tıklandığında yapılacak işlemleri ekleyebilirsiniz
-      // Örneğin: Belirli bir sayfaya yönlendirme
-      print('Mesaj işleniyor: ${message.notification?.title}');
-      print('Mesaj data: ${message.data}');
+      print('Mesaj işleniyor:');
+      print('Title: ${message.notification?.title}');
+      print('Body: ${message.notification?.body}');
+      print('Data: ${message.data}');
+
+      // Bildirim tipine göre işlem yapabilirsiniz
+      if (message.data['type'] == 'qr_scan') {
+        print('QR tarama bildirimi: ${message.data['id']}');
+        // TODO: QR tarama sayfasına yönlendirme yapılabilir
+      }
     } catch (e) {
       print('Mesaj işleme hatası: $e');
     }
@@ -92,6 +113,18 @@ class NotificationService {
     } catch (e) {
       print('Token alma hatası: $e');
       return null;
+    }
+  }
+
+  // Token'ı yazdırmak için yardımcı metod
+  Future<void> printCurrentToken() async {
+    try {
+      String? token = await _firebaseMessaging.getToken();
+      print('=================== CURRENT FCM TOKEN ===================');
+      print(token ?? 'Token bulunamadı');
+      print('======================================================');
+    } catch (e) {
+      print('Token yazdırma hatası: $e');
     }
   }
 }

@@ -33,6 +33,9 @@ void main() async {
     // Bildirimleri başlat
     await NotificationService().initialize();
 
+    // FCM token'ı yazdır
+    await NotificationService().printCurrentToken();
+
     // SharedPreferences'ı başlat
     final prefs = await SharedPreferences.getInstance();
     final bool isOnboardingComplete =
